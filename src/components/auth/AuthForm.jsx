@@ -1,23 +1,21 @@
 import { useState } from "react"
 import api from "@/lib/axios"
+import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 
 export default function AuthForm({ type = "login" }) {
+    const isLogin = type === "login"
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
-    const isLogin = type === "login"
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        setError("")
-
         try {
-            const res = await api.post(`/${type}`, { email, password })
-            console.log("✅ Success:", res.data)
-            // TODO: зберегти токен, редірект, показати повідомлення тощо
+            await api.post("/login", { email, password }) 
+            navigate("/dashboard")
         } catch (err) {
-            console.error("❌ Error:", err)
             setError(err.response?.data?.detail || "Something went wrong")
         }
     }
