@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import api from "@/lib/axios"
+import LogoutButton from "@/components/auth/LogoutButton.jsx";
 
 export default function Dashboard() {
     const [user, setUser] = useState(null)
@@ -17,7 +18,10 @@ export default function Dashboard() {
 
     return (
         <div className="p-6 text-center">
-            <h1 className="text-3xl font-bold">Welcome, {user.email} 🎧</h1>
+            <h1 className="text-3xl font-bold">🎧 Dashboard, hello {user.email}</h1>
+            <p className="mt-4">
+                <LogoutButton/>
+            </p>
         </div>
     )
 }
