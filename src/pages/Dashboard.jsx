@@ -18,7 +18,7 @@ export default function Dashboard() {
 
     return (
         <div className="p-6 text-center">
-            <h1 className="text-3xl font-bold">🎧 Dashboard, hello {user.email}</h1>
+            <h1 className="text-3xl font-bold">🎧 Dashboard, hello {user.username}</h1>
             <p className="mt-4">
                 <LogoutButton/>
             </p>

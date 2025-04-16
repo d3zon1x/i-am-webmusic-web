@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom"
 import AuthPageWrapper from "@/pages/AuthPageWrapper.jsx"
 import showIcon from "@/assets/show.png"
 import hideIcon from "@/assets/hide.png"
-import { Eye, EyeOff } from "lucide-react"
 
 export default function AuthForm() {
     const [mode, setMode] = useState("login")
     const isLogin = mode === "login"
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [repeatPassword, setRepeatPassword] = useState("")
@@ -29,10 +29,21 @@ export default function AuthForm() {
             return
         }
 
+        if (!isLogin) {
+            const usernameError = validateUsername(username)
+            if (usernameError) {
+                setError(usernameError)
+                return
+            }
+        }
+
         try {
-            await api.post(`/${mode}`, { email, password })
             if (mode === "register") {
-                await api.post(`/${mode}`, { email, password })
+                await api.post("/register", {
+                    email,
+                    password,
+                    username,
+                })
             }else{
                 await api.post(`/${mode}`, {
                     email,
@@ -53,10 +64,26 @@ export default function AuthForm() {
                 setRepeatPassword("")
             }
         } catch (err) {
-            setError(err.response?.data?.detail || "Something went wrong")
+            const msg = err.response?.data?.detail;
+            setError(typeof msg === "string" ? msg : "Something went wrong");
         }
     }
 
+    const validateUsername = (username) => {
+        const minLength = 3
+        const regex = /^[a-zA-Z0-9_]+$/
+
+        if (username.length < minLength) {
+            return "Username must be at least 3 characters long"
+        }
+
+        if (!regex.test(username)) {
+            return "Username can only contain letters, numbers, and underscores"
+        }
+
+        return null
+    }
+    
     return (
         <AuthPageWrapper>
 
@@ -92,6 +119,7 @@ export default function AuthForm() {
                             setPassword("")
                             setRepeatPassword("")
                             setError("")
+                            setSuccess("")
                         }}
                     >
                         Sign Up
@@ -103,6 +131,18 @@ export default function AuthForm() {
                         {error}
                     </p>
                 )} {success && <p className="text-green-400 mb-4 text-center">{success}</p>}
+
+                {!isLogin && (
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        className="w-full bg-transparent border border-white/20 p-3 rounded-md mb-4 placeholder-white/60 focus:outline-none focus:border-red-500 transition"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                )}
+
 
                 <input
                     type="email"
