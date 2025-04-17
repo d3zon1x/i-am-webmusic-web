@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import api from "@/lib/axios"
 import LogoutButton from "@/components/auth/LogoutButton.jsx";
+import MainPageWrapper from "@/pages/MainPageWrapper.jsx";
 
 export default function Dashboard() {
     const [user, setUser] = useState(null)
@@ -17,11 +18,11 @@ export default function Dashboard() {
     if (!user) return <p className="text-center p-4 text-red-500">Access denied</p>
 
     return (
-        <div className="p-6 text-center">
-            <h1 className="text-3xl font-bold">🎧 Dashboard, hello {user.username}</h1>
-            <p className="mt-4">
-                <LogoutButton/>
-            </p>
+        <MainPageWrapper>
+            <div className="p-6 mt-6 text-center">
+            <h1 className="text-3xl font-bold">XY3SOS1</h1>
+            
         </div>
+        </MainPageWrapper>
     )
 }

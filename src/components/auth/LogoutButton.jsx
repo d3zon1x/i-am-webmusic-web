@@ -1,10 +1,11 @@
 import api from "@/lib/axios"
+import { LogOut } from "lucide-react"  // іконка logout
 
 export default function LogoutButton() {
     const handleLogout = async () => {
         try {
             await api.post("/logout")
-            window.location.href = "/" // або navigate("/") якщо в роутері
+            window.location.href = "/"
         } catch (err) {
             console.error("Logout error:", err)
         }
@@ -13,9 +14,10 @@ export default function LogoutButton() {
     return (
         <button
             onClick={handleLogout}
-            className="text-sm text-red-400 underline hover:text-red-300"
+            className="hover:text-red-500 transition p-2"
+            title="Logout"
         >
-            Logout
+            <LogOut className="w-5 h-5" />
         </button>
     )
 }

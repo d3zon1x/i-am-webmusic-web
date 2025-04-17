@@ -5,6 +5,7 @@ import App from './App.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import './index.css'
 import RequireAuth from "@/components/auth/RequireAuth.jsx";
+import ResetPassword from "@/pages/ResetPassword.jsx";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
@@ -19,6 +20,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                         </RequireAuth>
                     }
                 />
+
+                <Route path="/reset-password" element={<ResetPassword />} />
             </Routes>
         </BrowserRouter>
     </React.StrictMode>,
