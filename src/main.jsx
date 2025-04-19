@@ -6,12 +6,20 @@ import Dashboard from './pages/Dashboard.jsx'
 import './index.css'
 import RequireAuth from "@/components/auth/RequireAuth.jsx";
 import ResetPassword from "@/pages/ResetPassword.jsx";
+import RedirectIfAuthenticated from "@/components/auth/RedirectIfAuthenticated.jsx" // ⬅️ додаєш це
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<App />} />
+                <Route
+                    path="/"
+                    element={
+                        <RedirectIfAuthenticated>
+                            <App />
+                        </RedirectIfAuthenticated>
+                    }
+                />
                 <Route
                     path="/dashboard"
                     element={
@@ -20,7 +28,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                         </RequireAuth>
                     }
                 />
-
                 <Route path="/reset-password" element={<ResetPassword />} />
             </Routes>
         </BrowserRouter>
