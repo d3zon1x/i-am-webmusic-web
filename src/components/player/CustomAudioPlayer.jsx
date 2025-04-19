@@ -6,10 +6,11 @@ import CustomAudioProgressBar from "@/components/player/CustomAudioProgressBar.j
 import VolumeSlider from "@/components/player/VolumeSlider.jsx";
 
 export default function CustomAudioPlayer({ track }) {
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);  // Спочатку встановлюємо на false, тому що трек ще не почав грати
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [volume, setVolume] = useState(0.5); 
+    const [volume, setVolume] = useState(0.5); // volume set to 50% by default
+    const [thumbnailValid, setThumbnailValid] = useState(true); // Стейт для перевірки валідності прев'юшки
     const audioRef = useRef(null);
 
     useEffect(() => {
@@ -19,8 +20,9 @@ export default function CustomAudioPlayer({ track }) {
         const updateProgress = () => setProgress(audio.currentTime);
         const setAudioDuration = () => setDuration(audio.duration);
 
+        // Почати відтворення, коли компонент монтується
         audio.play();
-        setIsPlaying(true); 
+        setIsPlaying(true); // Змінюємо статус на "playing" після того, як трек почав грати
 
         audio.addEventListener("timeupdate", updateProgress);
         audio.addEventListener("loadedmetadata", setAudioDuration);
@@ -38,7 +40,7 @@ export default function CustomAudioPlayer({ track }) {
             } else {
                 audioRef.current.play();
             }
-            setIsPlaying(!isPlaying); 
+            setIsPlaying(!isPlaying);  // Змінюємо статус плеєра
         }
     };
 
@@ -62,18 +64,38 @@ export default function CustomAudioPlayer({ track }) {
         setVolume(volume);
     };
 
+    const checkThumbnailValidity = (url) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => setThumbnailValid(true);  // Картинка є валідною
+        img.onerror = () => setThumbnailValid(false);  // Картинка поламана
+    };
 
+    useEffect(() => {
+        if (track?.thumbnail) {
+            checkThumbnailValidity(track.thumbnail);
+        }
+    }, [track?.thumbnail]);
+
+  
 
     return (
         <div className="custom-container">
             {/* Прев'ю */}
             <div className="custom-preview">
-                <img
-                    src={track?.thumbnail || dummy}
-                    alt={track?.title}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.3s ease" }}
-                    className="track-thumbnail"
-                />
+                {thumbnailValid ? (
+                    <img
+                        src={track?.thumbnail || dummy}
+                        alt={track?.title}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                ) : (
+                    <img
+                        src={dummy}
+                        alt="fallback"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                )}
             </div>
 
             <div className="custom-audio-player w-full bg-black p-4 shadow-lg fixed bottom-0 left-1/2 transform -translate-x-1/2">
@@ -81,7 +103,7 @@ export default function CustomAudioPlayer({ track }) {
                 <div className="player-info">
                     <div className="track-details">
                         <p>{track?.title || "Track Name"}</p>
-                        <p className="artist">{track?.artist || "Artist Name"}</p>
+                        <p className="artist">{track?.artist || "Artist Name"} • {track?.plays || ""} plays</p>
                     </div>
                 </div>
 
@@ -97,22 +119,13 @@ export default function CustomAudioPlayer({ track }) {
                     <div className="flex items-center gap-2 justify-between w-full control-container">
                         <span className="text-xs text-gray-400 mt-1">{formatTime(progress)}</span>
                         <div className="flex justify-between gap-3 mt-3">
-                            <button
-                                onClick={() => seekAudio(progress - 10)}
-                                className="text-white transition-all hover:scale-110 hover:text-red-500"
-                            >
+                            <button onClick={() => seekAudio(progress - 10)} className="text-white">
                                 <FaStepBackward />
                             </button>
-                            <button
-                                onClick={togglePlayback}
-                                className="text-white transition-all hover:scale-110 hover:text-red-500"
-                            >
+                            <button onClick={togglePlayback} className="text-white">
                                 {isPlaying ? <FaPause className="w-6 h-6" /> : <FaPlay className="w-6 h-6" />}
                             </button>
-                            <button
-                                onClick={() => seekAudio(progress + 10)}
-                                className="text-white transition-all hover:scale-110 hover:text-red-500"
-                            >
+                            <button onClick={() => seekAudio(progress + 10)} className="text-white">
                                 <FaStepForward />
                             </button>
                         </div>
@@ -122,8 +135,8 @@ export default function CustomAudioPlayer({ track }) {
 
                 {/* Controls */}
                 <div className="flex items-center justify-between">
-                    <div className="volume-control flex items-center gap-2">
-                        <FaVolumeUp className="text-white transition-all hover:scale-110 hover:text-red-500" />
+                    <div className="volume-control">
+                        <FaVolumeUp className="text-white" />
                         <VolumeSlider volume={volume} onChange={handleVolumeChange} />
                     </div>
                 </div>

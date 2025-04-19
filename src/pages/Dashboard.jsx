@@ -4,6 +4,7 @@ import MainPageWrapper from "@/pages/MainPageWrapper.jsx";
 import { Clock } from "lucide-react";
 import { FaPlay, FaPause, FaSearch } from "react-icons/fa";
 import CustomAudioPlayer from "@/components/player/CustomAudioPlayer.jsx";
+import dummy from "../assets/nav_logo.png"
 
 export default function Dashboard() {
     const [user, setUser] = useState(null);
@@ -33,6 +34,7 @@ export default function Dashboard() {
         try {
             const res = await api.get(`/music/search?query=${encodeURIComponent(searchTerm)}`);
             setResults(res.data);
+            // console.log(res);
         } catch (err) {
             console.error("Search error:", err);
         } finally {
@@ -67,6 +69,7 @@ export default function Dashboard() {
 
     const getHighResThumbnail = (track) => {
         const lastThumb = track.thumbnails?.[track.thumbnails.length - 1]?.url;
+        // console.log(lastThumb);
         return lastThumb?.replace(/w\d+-h\d+/, 'w500-h500');
     };
 
@@ -125,9 +128,9 @@ export default function Dashboard() {
                                             src={getHighResThumbnail(track)}
                                             alt={track.title}
                                             className="w-full h-full object-cover"
-                                            onError={(e) => { e.target.src = "/fallback.jpg" }}
+                                            onError={(e) => { e.target.src = dummy }}
                                         />
-                                        <div className={`absolute bottom-2 right-2 transition-opacity duration-300 ${hoveredCard === idx ? 'opacity-100' : 'opacity-0'}`}>
+                                        <div className="absolute bottom-2 right-2 transition-opacity duration-300 ${hoveredCard === idx ? 'opacity-100' : 'opacity-0">
                                             <button onClick={() => handlePlay(track)} className="bg-gradient-to-r from-[#3d1511] to-[#87291f] p-4 rounded-full shadow-xl transform transition-transform duration-300 hover:scale-110">
                                                 <FaPlay className="text-white w-3 h-3" />
                                             </button>
@@ -153,7 +156,7 @@ export default function Dashboard() {
                                                 src={getHighResThumbnail(track)}
                                                 alt={track.title}
                                                 className="w-12 h-12 rounded object-cover group-hover:brightness-50"
-                                                onError={(e) => { e.target.src = "/fallback.jpg" }}
+                                                onError={(e) => { e.target.src = dummy }}
                                             />
                                             {hoveredTrack === idx && (
                                                 <button onClick={() => handlePlay(track)} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/20 p-2 rounded-full shadow-lg transition-opacity duration-200">
