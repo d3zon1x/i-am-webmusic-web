@@ -17,6 +17,8 @@ export default function Dashboard() {
     const [hasSearched, setHasSearched] = useState(false);
     const [currentTrackUrl, setCurrentTrackUrl] = useState(null);
     const [currentTrack, setCurrentTrack] = useState(null);
+    const [currentTrackIndex, setCurrentTrackIndex] = useState(null);
+    const [queue, setQueue] = useState([]);
 
 
     useEffect(() => {
@@ -34,6 +36,8 @@ export default function Dashboard() {
         try {
             const res = await api.get(`/music/search?query=${encodeURIComponent(searchTerm)}`);
             setResults(res.data);
+            const formattedTracks = formatTracksForQueue(res.data);
+            setQueue(formattedTracks);
             // console.log(res);
         } catch (err) {
             console.error("Search error:", err);
@@ -48,12 +52,29 @@ export default function Dashboard() {
         }
     };
 
-    const handlePlay = (track) => {
+    const formatTracksForQueue = (tracks) => {
+        return tracks.map((track) => {
+            const trackThumbnail = getHighResThumbnail(track); // отримуємо прев'юшку
+            const trackDetails = {
+                url: `http://localhost:8000/api/music/stream/${track.videoId}`,
+                title: track.title,
+                artist: track.artists?.map(a => a.name).join(", "),
+                thumbnail: trackThumbnail,
+                videoId: track.videoId,
+                duration: track.duration,  // додаємо тривалість
+            };
+            return trackDetails;
+        });
+    };
+    
+
+    const handlePlay = (track, index) => {
+        // Створюємо URL для треку
         const url = `http://localhost:8000/api/music/stream/${track.videoId}`;
         setCurrentTrackUrl(url);
 
         // Отримуємо прев'юшку з треку (якщо вона є)
-        const trackThumbnail = getHighResThumbnail(track)
+        const trackThumbnail = getHighResThumbnail(track);
 
         // Створюємо об'єкт з усіма потрібними даними
         const trackDetails = {
@@ -63,8 +84,23 @@ export default function Dashboard() {
             thumbnail: trackThumbnail, // Прев'юшка
         };
 
-        // Зберігаємо дані в стані
+        // Зберігаємо поточний трек та його індекс в стані
         setCurrentTrack(trackDetails);
+        setCurrentTrackIndex(index); // Зберігаємо індекс пісні в черзі
+    };
+
+    const playNext = () => {
+        if (currentTrackIndex === (queue.length - 1)) { return; }
+        const nextTrackIndex = (currentTrackIndex + 1) % queue.length; // Обчислюємо наступний трек, якщо це останній, починаємо з першого
+        setCurrentTrack(queue[nextTrackIndex]);
+        setCurrentTrackIndex(nextTrackIndex); // Оновлюємо індекс поточного треку
+    };
+
+    const playPrev = () => {
+        if (currentTrackIndex === 0) { return; }
+        const prevTrackIndex = (currentTrackIndex - 1 + queue.length) % queue.length; // Обчислюємо попередній трек
+        setCurrentTrack(queue[prevTrackIndex]);
+        setCurrentTrackIndex(prevTrackIndex); // Оновлюємо індекс поточного треку
     };
 
     const getHighResThumbnail = (track) => {
@@ -131,7 +167,7 @@ export default function Dashboard() {
                                             onError={(e) => { e.target.src = dummy }}
                                         />
                                         <div className="absolute bottom-2 right-2 transition-opacity duration-300 ${hoveredCard === idx ? 'opacity-100' : 'opacity-0">
-                                            <button onClick={() => handlePlay(track)} className="bg-gradient-to-r from-[#3d1511] to-[#87291f] p-4 rounded-full shadow-xl transform transition-transform duration-300 hover:scale-110">
+                                            <button onClick={() => handlePlay(track, idx)} className="bg-gradient-to-r from-[#3d1511] to-[#87291f] p-4 rounded-full shadow-xl transform transition-transform duration-300 hover:scale-110">
                                                 <FaPlay className="text-white w-3 h-3" />
                                             </button>
                                         </div>
@@ -142,7 +178,7 @@ export default function Dashboard() {
                             ))}
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-4 mb-24">
                             {results.slice(3).map((track, idx) => (
                                 <div
                                     key={idx}
@@ -159,7 +195,7 @@ export default function Dashboard() {
                                                 onError={(e) => { e.target.src = dummy }}
                                             />
                                             {hoveredTrack === idx && (
-                                                <button onClick={() => handlePlay(track)} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/20 p-2 rounded-full shadow-lg transition-opacity duration-200">
+                                                <button onClick={() => handlePlay(track, idx)} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/20 p-2 rounded-full shadow-lg transition-opacity duration-200">
                                                     <FaPlay className="w-3 h-3 text-white" />
                                                 </button>
                                             )}
@@ -182,7 +218,14 @@ export default function Dashboard() {
                         {/* Custom Audio Player */}
                     </>
                 )}
-                {currentTrack && <CustomAudioPlayer track={currentTrack} />}
+                {currentTrack && (
+                    <CustomAudioPlayer
+                        track={currentTrack}
+                        playNext={playNext}  
+                        playPrev={playPrev}
+                        queue={queue}
+                    />  
+                )}
             </div>
         </MainPageWrapper>
     );

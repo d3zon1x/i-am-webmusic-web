@@ -1,0 +1,110 @@
+/* Стилі для модалки */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 75%;
+    z-index: 9999; 
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 109px;
+    margin-top: 68px;
+    padding-bottom: 0;
+}
+
+.modal-content {
+    background-color: black;
+    color: white;
+    padding: 20px;
+    width: 420px;
+    overflow-y: auto;
+    margin-right: 20px;  /* Відступ справа */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between; /* Distributes space between button and heading */
+    align-items: center; /* Centers content vertically */
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.close-btn {
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+h2 {
+    flex-grow: 1; /* Allows the heading to take up the remaining space */
+    text-align: center; /* Centers the text */
+    font-size: 18px;
+    margin: 0;
+}
+
+.close-btn:hover {
+    background-color: #e60000;
+    border-radius: 15px;
+}
+
+.queue-list {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+}
+
+.track-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.track-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.track-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.track-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 10px;
+}
+
+.track-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.track-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-artist {
+    font-size: 12px;
+    color: #aaa;
+}
