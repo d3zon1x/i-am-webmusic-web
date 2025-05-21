@@ -19,6 +19,7 @@ export default function Dashboard() {
     const [currentTrack, setCurrentTrack] = useState(null);
     const [currentTrackIndex, setCurrentTrackIndex] = useState(null);
     const [queue, setQueue] = useState([]);
+    const [rawQueue, setRawQueue] = useState([]);
 
 
     useEffect(() => {
@@ -36,8 +37,8 @@ export default function Dashboard() {
         try {
             const res = await api.get(`/music/search?query=${encodeURIComponent(searchTerm)}`);
             setResults(res.data);
-            const formattedTracks = formatTracksForQueue(res.data);
-            setQueue(formattedTracks);
+            setRawQueue(res.data)
+            
             // console.log(res);
         } catch (err) {
             console.error("Search error:", err);
@@ -69,6 +70,8 @@ export default function Dashboard() {
     
 
     const handlePlay = (track, index) => {
+        const formattedTracks = formatTracksForQueue(rawQueue);
+        setQueue(formattedTracks);
         // Створюємо URL для треку
         const url = `http://localhost:8000/api/music/stream/${track.videoId}`;
         setCurrentTrackUrl(url);
@@ -224,6 +227,7 @@ export default function Dashboard() {
                         playNext={playNext}  
                         playPrev={playPrev}
                         queue={queue}
+                        currentTrackIdx={currentTrackIndex}
                     />  
                 )}
             </div>

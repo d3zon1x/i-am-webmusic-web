@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import {FaPlay, FaPause, FaStepBackward, FaStepForward, FaVolumeUp, FaList} from "react-icons/fa";
 import dummy from "../../assets/nav_logo.png"
+import "./queue-modal.css"
 import "./player-style.css"
 import CustomAudioProgressBar from "@/components/player/CustomAudioProgressBar.jsx";
 import VolumeSlider from "@/components/player/VolumeSlider.jsx";
 import QueueModal from "@/components/player/QueueModal.jsx";
 
-export default function CustomAudioPlayer({ track, playNext, playPrev, queue }) {
+export default function CustomAudioPlayer({ track, playNext, playPrev, queue, currentTrackIdx }) {
     const [isPlaying, setIsPlaying] = useState(false);  // Спочатку встановлюємо на false, тому що трек ще не почав грати
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -166,7 +167,13 @@ export default function CustomAudioPlayer({ track, playNext, playPrev, queue }) 
                 {/* Audio */}
                 <audio ref={audioRef} src={track?.url} onEnded={() => setIsPlaying(false)}/>
             </div>
-            <QueueModal isOpen={isModalOpen} queue={queue} closeModal={toggleModal}/> 
+            <QueueModal 
+                isOpen={isModalOpen} 
+                queue={queue} 
+                closeModal={toggleModal}
+                className={isModalOpen ? 'open' : ''}
+                currentTrackIndex={currentTrackIdx}
+            /> 
 
         </div>
     );
