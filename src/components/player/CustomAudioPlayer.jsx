@@ -122,7 +122,7 @@ export default function CustomAudioPlayer() {
                 <div className="player-info">
                     <div className="track-details">
                         <p>{currentTrack?.title || "Track Name"}</p>
-                        <p className="artist">{currentTrack?.artist || "Artist Name"} • {currentTrack?.plays || ""} plays</p>
+                        <p className="artist">{currentTrack?.artist || "Artist Name"}</p>
                     </div>
                 </div>
 

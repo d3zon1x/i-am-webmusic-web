@@ -42,7 +42,7 @@ export default function Dashboard() {
 
             const formatted = formatTracksForQueue(res.data);
             setResults(res.data);
-            setQueue(formatted);
+            // setQueue(formatted);
             
             // console.log(res);
         } catch (err) {
