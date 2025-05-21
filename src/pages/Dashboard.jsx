@@ -5,6 +5,7 @@ import { Clock } from "lucide-react";
 import { FaPlay, FaPause, FaSearch } from "react-icons/fa";
 import CustomAudioPlayer from "@/components/player/CustomAudioPlayer.jsx";
 import dummy from "../assets/nav_logo.png"
+import {useMusic} from "@/contexts/MusicContext.jsx";
 
 export default function Dashboard() {
     const [user, setUser] = useState(null);
@@ -16,10 +17,10 @@ export default function Dashboard() {
     const [searching, setSearching] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
     const [currentTrackUrl, setCurrentTrackUrl] = useState(null);
-    const [currentTrack, setCurrentTrack] = useState(null);
-    const [currentTrackIndex, setCurrentTrackIndex] = useState(null);
-    const [queue, setQueue] = useState([]);
     const [rawQueue, setRawQueue] = useState([]);
+
+    const { setQueue, playTrack, currentTrack, currentTrackIndex } = useMusic();
+
 
 
     useEffect(() => {
@@ -38,6 +39,10 @@ export default function Dashboard() {
             const res = await api.get(`/music/search?query=${encodeURIComponent(searchTerm)}`);
             setResults(res.data);
             setRawQueue(res.data)
+
+            const formatted = formatTracksForQueue(res.data);
+            setResults(res.data);
+            setQueue(formatted);
             
             // console.log(res);
         } catch (err) {
@@ -88,8 +93,7 @@ export default function Dashboard() {
         };
 
         // Зберігаємо поточний трек та його індекс в стані
-        setCurrentTrack(trackDetails);
-        setCurrentTrackIndex(index); // Зберігаємо індекс пісні в черзі
+        playTrack(trackDetails, index);
     };
 
     const playNext = () => {
@@ -198,7 +202,7 @@ export default function Dashboard() {
                                                 onError={(e) => { e.target.src = dummy }}
                                             />
                                             {hoveredTrack === idx && (
-                                                <button onClick={() => handlePlay(track, idx)} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/20 p-2 rounded-full shadow-lg transition-opacity duration-200">
+                                                <button onClick={() => handlePlay(track, idx+3)} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/20 p-2 rounded-full shadow-lg transition-opacity duration-200">
                                                     <FaPlay className="w-3 h-3 text-white" />
                                                 </button>
                                             )}
@@ -222,13 +226,7 @@ export default function Dashboard() {
                     </>
                 )}
                 {currentTrack && (
-                    <CustomAudioPlayer
-                        track={currentTrack}
-                        playNext={playNext}  
-                        playPrev={playPrev}
-                        queue={queue}
-                        currentTrackIdx={currentTrackIndex}
-                    />  
+                    <CustomAudioPlayer/>  
                 )}
             </div>
         </MainPageWrapper>

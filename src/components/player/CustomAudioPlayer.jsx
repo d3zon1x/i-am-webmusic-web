@@ -6,26 +6,29 @@ import "./player-style.css"
 import CustomAudioProgressBar from "@/components/player/CustomAudioProgressBar.jsx";
 import VolumeSlider from "@/components/player/VolumeSlider.jsx";
 import QueueModal from "@/components/player/QueueModal.jsx";
+import {useMusic} from "@/contexts/MusicContext.jsx";
 
-export default function CustomAudioPlayer({ track, playNext, playPrev, queue, currentTrackIdx }) {
+export default function CustomAudioPlayer() {
     const [isPlaying, setIsPlaying] = useState(false);  // Спочатку встановлюємо на false, тому що трек ще не почав грати
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
     const [volume, setVolume] = useState(0.5); // volume set to 50% by default
     const [thumbnailValid, setThumbnailValid] = useState(true); // Стейт для перевірки валідності прев'юшки
     const audioRef = useRef(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);  
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const {currentTrack, playNext, playPrev, currentTrackIndex } = useMusic();
 
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
-        if (audio && track?.url) {
+        if (audio && currentTrack?.url) {
             audio.play().catch(error => {
                 console.error("Error trying to play the audio:", error);
             });
             setIsPlaying(true);
         }
-        console.log("Current playing track: ", track)
+        console.log("Current playing currentTrack: ", currentTrack)
         const updateProgress = () => setProgress(audio.currentTime);
         const setAudioDuration = () => setDuration(audio.duration);
 
@@ -40,7 +43,7 @@ export default function CustomAudioPlayer({ track, playNext, playPrev, queue, cu
             audio.removeEventListener("timeupdate", updateProgress);
             audio.removeEventListener("loadedmetadata", setAudioDuration);
         };
-    }, [track]);
+    }, [currentTrack]);
 
     const togglePlayback = () => {
         if (audioRef.current) {
@@ -87,10 +90,10 @@ export default function CustomAudioPlayer({ track, playNext, playPrev, queue, cu
     
 
     useEffect(() => {
-        if (track?.thumbnail) {
-            checkThumbnailValidity(track.thumbnail);
+        if (currentTrack?.thumbnail) {
+            checkThumbnailValidity(currentTrack.thumbnail);
         }
-    }, [track?.thumbnail]);
+    }, [currentTrack?.thumbnail]);
 
   
 
@@ -100,8 +103,8 @@ export default function CustomAudioPlayer({ track, playNext, playPrev, queue, cu
             <div className="custom-preview">
                 {thumbnailValid ? (
                     <img
-                        src={track?.thumbnail || dummy}
-                        alt={track?.title}
+                        src={currentTrack?.thumbnail || dummy}
+                        alt={currentTrack?.title}
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                     />
                 ) : (
@@ -118,8 +121,8 @@ export default function CustomAudioPlayer({ track, playNext, playPrev, queue, cu
                 {/* Track Info */}
                 <div className="player-info">
                     <div className="track-details">
-                        <p>{track?.title || "Track Name"}</p>
-                        <p className="artist">{track?.artist || "Artist Name"} • {track?.plays || ""} plays</p>
+                        <p>{currentTrack?.title || "Track Name"}</p>
+                        <p className="artist">{currentTrack?.artist || "Artist Name"} • {currentTrack?.plays || ""} plays</p>
                     </div>
                 </div>
 
@@ -165,14 +168,12 @@ export default function CustomAudioPlayer({ track, playNext, playPrev, queue, cu
                
 
                 {/* Audio */}
-                <audio ref={audioRef} src={track?.url} onEnded={() => setIsPlaying(false)}/>
+                <audio ref={audioRef} src={currentTrack?.url} onEnded={() => setIsPlaying(false)}/>
             </div>
             <QueueModal 
                 isOpen={isModalOpen} 
-                queue={queue} 
                 closeModal={toggleModal}
                 className={isModalOpen ? 'open' : ''}
-                currentTrackIndex={currentTrackIdx}
             /> 
 
         </div>

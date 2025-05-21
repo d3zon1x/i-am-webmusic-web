@@ -6,11 +6,13 @@ import Dashboard from './pages/Dashboard.jsx'
 import './index.css'
 import RequireAuth from "@/components/auth/RequireAuth.jsx";
 import ResetPassword from "@/pages/ResetPassword.jsx";
-import RedirectIfAuthenticated from "@/components/auth/RedirectIfAuthenticated.jsx" // ⬅️ додаєш це
+import RedirectIfAuthenticated from "@/components/auth/RedirectIfAuthenticated.jsx"
+import {MusicProvider} from "@/contexts/MusicContext.jsx"; // ⬅️ додаєш це
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <BrowserRouter>
+        <MusicProvider>
+            <BrowserRouter>
             <Routes>
                 <Route
                     path="/"
@@ -31,5 +33,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <Route path="/reset-password" element={<ResetPassword />} />
             </Routes>
         </BrowserRouter>
+        </MusicProvider>
     </React.StrictMode>,
 )

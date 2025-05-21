@@ -122,11 +122,12 @@ h2 {
     height: 50px;
     object-fit: cover;
     border-radius: 8px;
-    margin-right: 10px;
+    /*margin-right: 10px;*/
 }
 
 .track-details {
     display: flex;
+    margin-left: 10px;
     flex-direction: column;
     justify-content: flex-start;
 }
@@ -143,6 +144,40 @@ h2 {
 .track-artist {
     font-size: 12px;
     color: #aaa;
+}
+
+.track-action-btn {
+    background: transparent;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    padding: 6px;
+    font-size: 16px;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+/* Ховер-ефекти */
+.track-action-btn:hover {
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Відтворення поруч із деталями */
+.play-btn {
+    margin-right: 8px;
+}
+
+/* Видалення — крайня справа */
+.remove-btn {
+    margin-left: auto;
+}
+
+/* Ви можете змінити ці кольори за смаком */
+.play-btn:hover {
+    color: #f87171; /* зелений при ховері */
+}
+.remove-btn:hover {
+    color: #f87171; /* червоний при ховері */
 }
 
 @keyframes slideInRight {
