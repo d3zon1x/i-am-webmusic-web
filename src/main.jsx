@@ -7,7 +7,8 @@ import './index.css'
 import RequireAuth from "@/components/auth/RequireAuth.jsx";
 import ResetPassword from "@/pages/ResetPassword.jsx";
 import RedirectIfAuthenticated from "@/components/auth/RedirectIfAuthenticated.jsx"
-import {MusicProvider} from "@/contexts/MusicContext.jsx"; // ⬅️ додаєш це
+import {MusicProvider} from "@/contexts/MusicContext.jsx";
+import ArtistPage from "@/components/artist/ArtistPage.jsx"; // ⬅️ додаєш це
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
@@ -27,6 +28,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     element={
                         <RequireAuth>
                             <Dashboard />
+                        </RequireAuth>
+                    }
+                />
+                <Route
+                    path="/artist/:name"
+                    element={
+                        <RequireAuth>
+                            <ArtistPage/>
                         </RequireAuth>
                     }
                 />

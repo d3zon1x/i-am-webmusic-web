@@ -3,9 +3,16 @@ import logo from "@/assets/nav_logo.png"
 import { useEffect, useState } from "react"
 import LogoutButton from "@/components/auth/LogoutButton.jsx"
 import api from "@/lib/axios.js"
+import dummy from "@/assets/nav_logo.png";
+import {FaPlay} from "react-icons/fa";
+import {Clock} from "lucide-react";
+import CustomAudioPlayer from "@/components/player/CustomAudioPlayer.jsx";
+import {useMusic} from "@/contexts/MusicContext.jsx";
 
 export default function MainPageWrapper({ children }) {
     const [user, setUser] = useState(null)
+    const { currentTrack } = useMusic();
+
 
     useEffect(() => {
         api.get("/me")
@@ -44,8 +51,14 @@ export default function MainPageWrapper({ children }) {
 
             {/* MAIN CONTENT */}
             <main className="p-8 h-[calc(100vh-72px)] overflow-y-auto">
-                {children}
+                <div >
+
+                    {children}
+                    {currentTrack && (
+                        <CustomAudioPlayer/>
+                    )}
+                </div>
             </main>
         </div>
-    )
+)
 }

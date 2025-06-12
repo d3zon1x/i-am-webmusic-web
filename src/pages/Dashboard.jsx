@@ -6,6 +6,12 @@ import { FaPlay, FaPause, FaSearch } from "react-icons/fa";
 import CustomAudioPlayer from "@/components/player/CustomAudioPlayer.jsx";
 import dummy from "../assets/nav_logo.png"
 import {useMusic} from "@/contexts/MusicContext.jsx";
+import Recommendations from "@/components/Recommendations/recommendations.jsx";
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+
+
 
 export default function Dashboard() {
     const [user, setUser] = useState(null);
@@ -18,8 +24,9 @@ export default function Dashboard() {
     const [hasSearched, setHasSearched] = useState(false);
     const [currentTrackUrl, setCurrentTrackUrl] = useState(null);
     const [rawQueue, setRawQueue] = useState([]);
+    const navigate = useNavigate();
 
-    const { setQueue, playTrack, currentTrack, currentTrackIndex } = useMusic();
+    const {queue, setQueue, playTrack, currentTrack, currentTrackIndex } = useMusic();
 
 
 
@@ -116,6 +123,13 @@ export default function Dashboard() {
         return lastThumb?.replace(/w\d+-h\d+/, 'w500-h500');
     };
 
+    const handleArtistClick = (artistName) => {
+        // За допомогою useNavigate можна відправити на сторінку артиста
+        navigate(`/artist/${artistName}`);
+    };
+
+
+
     if (loading) return <p className="text-center p-4">Loading...</p>;
     if (!user) return <p className="text-center p-4 text-red-500">Access denied</p>;
 
@@ -127,7 +141,7 @@ export default function Dashboard() {
                 <div className="flex justify-center mb-10">
                     <div className="relative w-2/3">
                         <button onClick={handleSearch} className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
-                            <FaSearch className="text-white/70 w-4 h-4" />
+                            <FaSearch className="text-white/70 w-4 h-4"/>
                         </button>
                         <input
                             type="text"
@@ -139,13 +153,24 @@ export default function Dashboard() {
                         />
                     </div>
                 </div>
+                {!hasSearched && (
+                    <div
+                        className="relative bg-white/10 backdrop-blur-sm p-4 rounded-lg shadow-md text-left transition-all"
+                    >
+                        Queue is null
 
+                        <Recommendations/>
+                    </div>
+
+                )}
                 {searching ? (
                     <div className="flex justify-center items-center py-16">
                         <div className="flex space-x-2">
                             <div className="w-3 h-3 bg-white rounded-full animate-bounce"></div>
-                            <div className="w-3 h-3 bg-white/70 rounded-full animate-bounce [animation-delay:0.15s]"></div>
-                            <div className="w-3 h-3 bg-white/50 rounded-full animate-bounce [animation-delay:0.3s]"></div>
+                            <div
+                                className="w-3 h-3 bg-white/70 rounded-full animate-bounce [animation-delay:0.15s]"></div>
+                            <div
+                                className="w-3 h-3 bg-white/50 rounded-full animate-bounce [animation-delay:0.3s]"></div>
                         </div>
                     </div>
                 ) : (
@@ -171,11 +196,15 @@ export default function Dashboard() {
                                             src={getHighResThumbnail(track)}
                                             alt={track.title}
                                             className="w-full h-full object-cover"
-                                            onError={(e) => { e.target.src = dummy }}
+                                            onError={(e) => {
+                                                e.target.src = dummy
+                                            }}
                                         />
-                                        <div className="absolute bottom-2 right-2 transition-opacity duration-300 ${hoveredCard === idx ? 'opacity-100' : 'opacity-0">
-                                            <button onClick={() => handlePlay(track, idx)} className="bg-gradient-to-r from-[#3d1511] to-[#87291f] p-4 rounded-full shadow-xl transform transition-transform duration-300 hover:scale-110">
-                                                <FaPlay className="text-white w-3 h-3" />
+                                        <div
+                                            className="absolute bottom-2 right-2 transition-opacity duration-300 ${hoveredCard === idx ? 'opacity-100' : 'opacity-0">
+                                            <button onClick={() => handlePlay(track, idx)}
+                                                    className="bg-gradient-to-r from-[#3d1511] to-[#87291f] p-4 rounded-full shadow-xl transform transition-transform duration-300 hover:scale-110">
+                                                <FaPlay className="text-white w-3 h-3"/>
                                             </button>
                                         </div>
                                     </div>
@@ -199,23 +228,33 @@ export default function Dashboard() {
                                                 src={getHighResThumbnail(track)}
                                                 alt={track.title}
                                                 className="w-12 h-12 rounded object-cover group-hover:brightness-50"
-                                                onError={(e) => { e.target.src = dummy }}
+                                                onError={(e) => {
+                                                    e.target.src = dummy
+                                                }}
                                             />
                                             {hoveredTrack === idx && (
-                                                <button onClick={() => handlePlay(track, idx+3)} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/20 p-2 rounded-full shadow-lg transition-opacity duration-200">
-                                                    <FaPlay className="w-3 h-3 text-white" />
+                                                <button onClick={() => handlePlay(track, idx + 3)}
+                                                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/20 p-2 rounded-full shadow-lg transition-opacity duration-200">
+                                                    <FaPlay className="w-3 h-3 text-white"/>
                                                 </button>
                                             )}
                                         </div>
                                         <div className="text-left">
                                             <p className="font-semibold text-sm truncate">{track.title}</p>
                                             <p className="text-xs text-white/70 truncate">
-                                                {track.artists?.map(a => a.name).join(", ")} • {track.views?.toString()} plays
+                                                <button
+                                                    onClick={() => handleArtistClick(track.artists?.[0].name)}
+                                                    className="text-white hover:underline"
+                                                >
+                                                    {track.artists?.map(a => a.name).join(", ")} • {track.views?.toString()} plays
+                                                </button>
+                                                • {track.views?.toString()} plays
                                             </p>
+
                                         </div>
                                     </div>
                                     <div className="text-sm text-white/60 flex items-center gap-1">
-                                        <Clock className="w-4 h-4" />
+                                        <Clock className="w-4 h-4"/>
                                         {track.duration}
                                     </div>
                                 </div>
@@ -225,9 +264,9 @@ export default function Dashboard() {
                         {/* Custom Audio Player */}
                     </>
                 )}
-                {currentTrack && (
-                    <CustomAudioPlayer/>  
-                )}
+                {/*{currentTrack && (*/}
+                {/*    <CustomAudioPlayer/>  */}
+                {/*)}*/}
             </div>
         </MainPageWrapper>
     );
