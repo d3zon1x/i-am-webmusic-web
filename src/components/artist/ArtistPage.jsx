@@ -126,7 +126,7 @@ export default function ArtistPage() {
                                         className={`album-item ${selectedAlbum?.id === album.id ? "selected" : ""}`}
                                         onClick={() => setSelectedAlbum(album)}
                                         style={{
-                                            transform: `translateX(-${(selectedAlbumIndex - i) * 200}px)`, // Плавне переміщення
+                                            transform: `translateX(-${(selectedAlbumIndex - i) * 200}px)`, 
                                         }}
                                     >
                                         <img src={album.photo} className="album-photo" alt={album.name}/>

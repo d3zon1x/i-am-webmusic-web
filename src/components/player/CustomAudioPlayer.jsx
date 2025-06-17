@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {FaPlay, FaPause, FaStepBackward, FaStepForward, FaVolumeUp, FaList} from "react-icons/fa";
+import {FaPlay, FaPause, FaStepBackward, FaStepForward, FaVolumeUp, FaList, FaAlignLeft} from "react-icons/fa";
 import dummy from "../../assets/nav_logo.png"
 import "./queue-modal.css"
 import "./player-style.css"
@@ -115,7 +115,6 @@ export default function CustomAudioPlayer() {
                     />
                 )}
             </div>
-
             <div
                 className="custom-audio-player w-full bg-black p-4 shadow-lg fixed bottom-0 left-1/2 transform -translate-x-1/2">
                 {/* Track Info */}
@@ -158,6 +157,9 @@ export default function CustomAudioPlayer() {
                         <button onClick={toggleModal}>
                             <FaList/>
                         </button>
+                        {/*<button>*/}
+                        {/*    <FaAlignLeft/>*/}
+                        {/*</button>*/}
                     </div>
                     <div className="volume-control">
                     <FaVolumeUp className="text-white"/>

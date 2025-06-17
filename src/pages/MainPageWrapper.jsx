@@ -50,13 +50,13 @@ export default function MainPageWrapper({ children }) {
             </header>
 
             {/* MAIN CONTENT */}
-            <main className="p-8 h-[calc(100vh-72px)] overflow-y-auto">
+            <main className="p-8 h-[calc(100vh-72px)] overflow-y-auto pb-40">
                 <div >
 
                     {children}
-                    {currentTrack && (
-                        <CustomAudioPlayer/>
-                    )}
+                    {/*{currentTrack && (*/}
+                    {/*    <CustomAudioPlayer/>*/}
+                    {/*)}*/}
                 </div>
             </main>
         </div>

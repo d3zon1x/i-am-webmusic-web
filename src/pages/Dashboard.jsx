@@ -246,9 +246,9 @@ export default function Dashboard() {
                                                     onClick={() => handleArtistClick(track.artists?.[0].name)}
                                                     className="text-white hover:underline"
                                                 >
-                                                    {track.artists?.map(a => a.name).join(", ")} • {track.views?.toString()} plays
+                                                    {track.artists?.map(a => a.name).join(", ")}
                                                 </button>
-                                                • {track.views?.toString()} plays
+                                                {} • {track.views?.toString()} plays
                                             </p>
 
                                         </div>

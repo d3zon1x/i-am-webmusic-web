@@ -74,6 +74,7 @@ h2 {
 
 .track-item {
     display: flex;
+    width: 100% !important;
     align-items: center;
     padding: 10px;
     margin-bottom: 10px;
@@ -112,48 +113,49 @@ h2 {
 }
 
 .track-content {
-    display: flex;
-    align-items: center;
-    width: 100%;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
 }
 
 .track-thumbnail {
-    width: 50px;
-    height: 50px;
+    width: 50px !important;
+    height: 50px !important;
     object-fit: cover;
-    border-radius: 8px;
-    /*margin-right: 10px;*/
+    border-radius: 8px !important;
+    /*margin-right: 10px !important;*/
 }
 
 .track-details {
-    display: flex;
-    margin-left: 10px;
-    flex-direction: column;
-    justify-content: flex-start;
+    display: flex !important;
+    margin-left: 10px !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
 }
 
 .track-title {
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    color: white !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
 .track-artist {
-    font-size: 12px;
-    color: #aaa;
+    font-size: 12px !important;
+    color: #aaa !important;
 }
 
 .track-action-btn {
-    background: transparent;
-    border: none;
-    color: #ccc;
-    cursor: pointer;
-    padding: 6px;
-    font-size: 16px;
-    transition: color 0.2s ease, transform 0.2s ease;
+    background: transparent !important;
+    border: none !important;
+    color: #ccc !important;
+    cursor: pointer !important;
+    padding: 6px !important;
+    font-size: 16px !important;
+    transition: color 0.2s ease, transform 0.2s ease !important;
 }
 
 /* Ховер-ефекти */
