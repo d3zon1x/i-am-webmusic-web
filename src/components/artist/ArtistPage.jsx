@@ -59,14 +59,27 @@ export default function ArtistPage() {
             <div className="artist-page">
                 {/* Ліва колонка */}
                 <div className="left-column">
-                    <div className="artist-header">
-                        <img src={artistData.artist.photo} alt={artistData.artist.name} className="artist-photo"/>
-                        <h1 className="artist-name">{artistData.artist.name}</h1>
+                    <div
+                        className="relative w-full h-72 md:h-96 rounded-lg overflow-hidden mb-8 shadow"
+                        style={{
+                            backgroundImage: `url(${artistData.artist.photo})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                        }}
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"/>
+
+                        {/* Ім’я артиста */}
+                        <div className="absolute bottom-4 right-6 md:right-12">
+                            <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-lg">
+                                {artistData.artist.name}
+                            </h1>
+                        </div>
                     </div>
 
-                    <div className="popular-tracks">
-                        <h2 className="section-title">Popular Tracks</h2>
-                        <div className="track-list">
+                    <div className="popular-tracks bg-black p-5 rounded-lg">
+                        <h2 className="section-title">POPULAR TRACKS</h2>
+                        <div className="track-list scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                             {artistData.topTracks.map((track, idx) => (
                                 <div
                                     key={idx}
@@ -103,7 +116,7 @@ export default function ArtistPage() {
                                         <div className="text-left">
                                             <p className="font-semibold text-sm truncate">{track.title}</p>
                                             <p className="text-xs text-white/70 truncate">
-                                                {track.artist} • {track.plays || "—"} plays
+                                                {track.artist}
                                             </p>
                                         </div>
                                     </div>
@@ -120,8 +133,8 @@ export default function ArtistPage() {
                 </div>
 
                 {/* Права колонка */}
-                <div className="right-column">
-                    <h2 className="section-title">Albums and Singles</h2>
+                <div className="right-column bg-black p-5 rounded-lg">
+                    <h2 className="section-title">ALBUMS & SINGLES</h2>
 
                     {/* Карусель */}
 
@@ -176,7 +189,7 @@ export default function ArtistPage() {
                                             <div className="text-left">
                                                 <p className="font-semibold text-sm truncate">{track.title}</p>
                                                 <p className="text-xs text-white/70 truncate">
-                                                    {artistData.artist.name} • {track.plays || "—"} plays
+                                                    {artistData.artist.name}
                                                 </p>
                                             </div>
                                         </div>

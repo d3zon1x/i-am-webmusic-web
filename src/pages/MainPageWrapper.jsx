@@ -50,7 +50,7 @@ export default function MainPageWrapper({ children }) {
             </header>
 
             {/* MAIN CONTENT */}
-            <main className="p-8 h-[calc(100vh-72px)] overflow-y-auto pb-40">
+            <main className="p-8 h-[calc(100vh-72px)] overflow-y-auto pb-40 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                 <div >
 
                     {children}

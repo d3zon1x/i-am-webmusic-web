@@ -16,12 +16,12 @@ const QueueModal = ({ isOpen, closeModal, className}) => {
 
     return (
         <div className={`modal-overlay ${className}`}>
-            <div className="modal-content">
+            <div className="modal-content scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                 <div className="modal-header">
                     <button onClick={closeModal} className="close-btn"><FaXmark/></button>
                     <h2 className="text-white font-bold">QUEUE</h2>
                 </div>
-                <ul className="queue-list">
+                <ul className="queue-list ">
                     {queue.map((track, idx) => (
                         <li key={idx}
                             onMouseEnter={() => setHoveredTrack(idx)}

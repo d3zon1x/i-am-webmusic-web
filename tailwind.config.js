@@ -9,6 +9,7 @@ export default {
       animation: {
         'fade-in': 'fadeIn 0.8s ease-out',
       },
+      scrollbar: ['rounded'],
       keyframes: {
         fadeIn: {
           '0%': { opacity: 0, transform: 'translateY(10px)' },
@@ -17,5 +18,7 @@ export default {
       },
     }
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+  ],
 }
