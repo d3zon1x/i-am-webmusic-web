@@ -1,19 +1,22 @@
-import {useState, useEffect, useRef} from "react";
+import {useState, useEffect} from "react";
 import api from "@/lib/axios";
-import CustomAudioPlayer from "@/components/player/CustomAudioPlayer.jsx";
 import MainPageWrapper from "@/pages/MainPageWrapper.jsx";
+import 'swiper/css';
 import "./artist-page.css"
+import AlbumCarousel from "@/components/artist/AlbumCarousel.jsx";
+import {FaPlay} from "react-icons/fa";
+import { Clock } from "lucide-react";
+import dummy from "../../assets/nav_logo.png"
+
 
 export default function ArtistPage() {
     const [artistData, setArtistData] = useState(null);
-    const artistName = window.location.pathname.split('/')[2]; // Отримуємо ім'я артиста з URL
+    const artistName = window.location.pathname.split('/')[2];
     const [selectedAlbum, setSelectedAlbum] = useState(null);
     const [albumTracks, setAlbumTracks] = useState([]);
-    const [selectedAlbumIndex, setSelectedAlbumIndex] = useState(0); // Ставимо початковий індекс
-
-    const albumGalleryRef = useRef(null);
+    const [selectedAlbumIndex, setSelectedAlbumIndex] = useState(0);
+    const [hoveredTrack, setHoveredTrack] = useState(null);
     
-    // Завантажуємо дані артиста
     useEffect(() => {
         const fetchArtistData = async () => {
             console.log(`Artist: ${artistName}`);
@@ -21,13 +24,13 @@ export default function ArtistPage() {
             console.log("FetchData", res.data);
             setArtistData(res.data);
             console.log("SelectedAlbum", res.data.albums[0].name);
-            setSelectedAlbum(res.data.albums[0]); // Встановлюємо перший альбом по дефолту
+            setSelectedAlbum(res.data.albums[0]); 
         };
 
         fetchArtistData();
     }, [artistName]);
 
-    // Завантажуємо треки альбому
+
     useEffect(() => {
         if (!selectedAlbum) return console.log("No selectedAlbum");
 
@@ -37,43 +40,12 @@ export default function ArtistPage() {
             console.log("Album 52", res.data);
             setAlbumTracks(res.data.tracks);
         }
-
-        // Викликаємо fetchTracks, коли selectedAlbum оновлено
+        
         if (selectedAlbum) {
             console.log("Album before fetching", selectedAlbum);
             fetchTracks();
         }
-    }, [selectedAlbum]); // Залежність від selectedAlbum гарантує, що fetchTracks викликається тільки після оновлення цього стану
-
-    // Функція для попереднього альбому
-    const handlePrev = () => {
-        const prevIndex = (selectedAlbumIndex - 1 + artistData.albums.length) % artistData.albums.length;
-        setSelectedAlbum(artistData.albums[prevIndex]);
-        setSelectedAlbumIndex(prevIndex);
-    };
-
-    // Функція для наступного альбому
-    const handleNext = () => {
-        const nextIndex = (selectedAlbumIndex + 1) % artistData.albums.length;
-        setSelectedAlbum(artistData.albums[nextIndex]);
-        setSelectedAlbumIndex(nextIndex);
-    };
-
-    const scrollToSelectedAlbum = () => {
-        const selectedAlbumElement = albumGalleryRef.current.children[selectedAlbumIndex];
-        selectedAlbumElement.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-            inline: "center",
-        });
-    };
-
-    useEffect(() => {
-        if (selectedAlbum) {
-            scrollToSelectedAlbum();
-        }
-    }, [selectedAlbumIndex]);
-
+    }, [selectedAlbum]); 
 
 
 
@@ -93,80 +65,134 @@ export default function ArtistPage() {
                     </div>
 
                     <div className="popular-tracks">
-                        <h2>Popular Tracks</h2>
+                        <h2 className="section-title">Popular Tracks</h2>
                         <div className="track-list">
-                            {artistData.topTracks.map((t, i) => (
-                                <div key={i} className="track-item" onClick={() => setCurrentTrack(t)}>
-                                    <img src={t.thumbnail} className="track-thumbnail" alt={t.title}/>
-                                    <div className="track-info">
-                                        <p className="track-title">{t.title}</p>
-                                        <p className="track-artist">{t.artist}</p>
+                            {artistData.topTracks.map((track, idx) => (
+                                <div
+                                    key={idx}
+                                    onMouseEnter={() => setHoveredTrack(idx)}
+                                    onMouseLeave={() => setHoveredTrack(null)}
+                                    className="bg-white/10 backdrop-blur-sm px-4 py-3 rounded-lg flex items-center justify-between shadow-md hover:bg-white/20 transition group cursor-pointer"
+                                    onClick={() => {
+                                        setQueue(artistData.topTracks);
+                                        playTrack(track, idx);
+                                    }}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="relative">
+                                            <img
+                                                src={track.thumbnail || dummy}
+                                                alt={track.title}
+                                                className="w-12 h-12 rounded object-cover group-hover:brightness-50"
+                                                onError={(e) => {
+                                                    e.target.src = dummy;
+                                                }}
+                                            />
+                                            {hoveredTrack === idx && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        playTrack(track, idx);
+                                                    }}
+                                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/20 p-2 rounded-full shadow-lg transition-opacity duration-200"
+                                                >
+                                                    <FaPlay className="w-3 h-3 text-white"/>
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div className="text-left">
+                                            <p className="font-semibold text-sm truncate">{track.title}</p>
+                                            <p className="text-xs text-white/70 truncate">
+                                                {track.artist} • {track.plays || "—"} plays
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="text-sm text-white/60 flex items-center gap-1">
+                                        <Clock className="w-4 h-4"/>
+                                        {new Date(track.duration_ms).toISOString().substr(14, 5)}
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
+
                 </div>
 
                 {/* Права колонка */}
                 <div className="right-column">
-                    <div className="p-8">
-                        <h2 className="text-2xl font-semibold mb-4">Albums & Singles</h2>
+                    <h2 className="section-title">Albums and Singles</h2>
 
-                        {/* Карусель альбомів */}
-                        <div className="carousel-container relative">
-                            <button className="carousel-button left" onClick={handlePrev}>
-                                &#60;
-                            </button>
+                    {/* Карусель */}
 
-                            <div className="album-gallery" ref={albumGalleryRef}>
-                                {artistData.albums.map((album, i) => (
+                    <AlbumCarousel
+                        albums={artistData.albums}
+                        selectedAlbum={selectedAlbum}
+                        onSelect={(album, i) => {
+                            setSelectedAlbum(album);
+                            setSelectedAlbumIndex(i);
+                        }}
+                    />
+
+
+                    {/* Треки вибраного альбому */}
+                    {selectedAlbum && (
+                        <div className="album-tracks">
+                            <h3 className="album-name">{selectedAlbum.name}</h3>
+                            <div className="album-track-list">
+                                {albumTracks.map((track, idx) => (
                                     <div
-                                        key={i}
-                                        className={`album-item ${selectedAlbum?.id === album.id ? "selected" : ""}`}
-                                        onClick={() => setSelectedAlbum(album)}
-                                        style={{
-                                            transform: `translateX(-${(selectedAlbumIndex - i) * 200}px)`, 
+                                        key={idx}
+                                        onMouseEnter={() => setHoveredTrack(idx)}
+                                        onMouseLeave={() => setHoveredTrack(null)}
+                                        className="bg-white/10 backdrop-blur-sm px-4 py-3 rounded-lg flex items-center justify-between shadow-md hover:bg-white/20 transition group cursor-pointer"
+                                        onClick={() => {
+                                            setQueue(albumTracks);
+                                            playTrack({ ...track, artist: artistData.artist.name }, idx);
                                         }}
                                     >
-                                        <img src={album.photo} className="album-photo" alt={album.name}/>
-                                        <p className="album-name">{album.name}</p>
+                                        <div className="flex items-center gap-4">
+                                            <div className="relative">
+                                                <img
+                                                    src={selectedAlbum.photo || dummy}
+                                                    alt={track.title}
+                                                    className="w-12 h-12 rounded object-cover group-hover:brightness-50"
+                                                    onError={(e) => {
+                                                        e.target.src = dummy;
+                                                    }}
+                                                />
+                                                {hoveredTrack === idx && (
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            playTrack({ ...track, artist: artistData.artist.name }, idx);
+                                                        }}
+                                                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/20 p-2 rounded-full shadow-lg transition-opacity duration-200"
+                                                    >
+                                                        <FaPlay className="w-3 h-3 text-white" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                            <div className="text-left">
+                                                <p className="font-semibold text-sm truncate">{track.title}</p>
+                                                <p className="text-xs text-white/70 truncate">
+                                                    {artistData.artist.name} • {track.plays || "—"} plays
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="text-sm text-white/60 flex items-center gap-1">
+                                            <Clock className="w-4 h-4" />
+                                            {new Date(track.duration_ms).toISOString().substr(14, 5)}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
-
-                            <button className="carousel-button right" onClick={handleNext}>
-                                &#62;
-                            </button>
                         </div>
+                    )}
 
-                        {/* Список треків вибраного альбому */}
-                        {selectedAlbum && (
-                            <div className="album-tracks">
-                                <h3>{selectedAlbum.name}</h3>
-                                <div className="album-track-list">
-                                    {albumTracks.map((track, i) => (
-                                        <div key={i} className="album-track"
-                                             onClick={() => setCurrentTrack({...track, albumName: selectedAlbum.name})}>
-                                            <div className="track-info">
-                                                <button className="play-btn">▶</button>
-                                                <div>
-                                                    <p className="track-title">{track.title}</p>
-                                                    <p className="track-artist">{artistData.artist.name}</p>
-                                                </div>
-                                            </div>
-                                            <p className="track-duration">{new Date(track.duration_ms).toISOString().substr(14, 5)}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
                 </div>
             </div>
-
-
         </MainPageWrapper>
-
     );
 }

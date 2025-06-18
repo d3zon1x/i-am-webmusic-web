@@ -67,7 +67,7 @@ export default function Dashboard() {
 
     const formatTracksForQueue = (tracks) => {
         return tracks.map((track) => {
-            const trackThumbnail = getHighResThumbnail(track); // отримуємо прев'юшку
+            const trackThumbnail = getHighResThumbnail(track); 
             const trackDetails = {
                 url: `http://localhost:8000/api/music/stream/${track.videoId}`,
                 title: track.title,
@@ -84,37 +84,20 @@ export default function Dashboard() {
     const handlePlay = (track, index) => {
         const formattedTracks = formatTracksForQueue(rawQueue);
         setQueue(formattedTracks);
-        // Створюємо URL для треку
+    
         const url = `http://localhost:8000/api/music/stream/${track.videoId}`;
         setCurrentTrackUrl(url);
-
-        // Отримуємо прев'юшку з треку (якщо вона є)
+        
         const trackThumbnail = getHighResThumbnail(track);
-
-        // Створюємо об'єкт з усіма потрібними даними
+        
         const trackDetails = {
             url,
-            title: track.title, // Назва пісні
-            artist: track.artists?.map(a => a.name).join(", "), // Виконавець
-            thumbnail: trackThumbnail, // Прев'юшка
+            title: track.title, 
+            artist: track.artists?.map(a => a.name).join(", "), 
+            thumbnail: trackThumbnail, 
         };
-
-        // Зберігаємо поточний трек та його індекс в стані
+        
         playTrack(trackDetails, index);
-    };
-
-    const playNext = () => {
-        if (currentTrackIndex === (queue.length - 1)) { return; }
-        const nextTrackIndex = (currentTrackIndex + 1) % queue.length; // Обчислюємо наступний трек, якщо це останній, починаємо з першого
-        setCurrentTrack(queue[nextTrackIndex]);
-        setCurrentTrackIndex(nextTrackIndex); // Оновлюємо індекс поточного треку
-    };
-
-    const playPrev = () => {
-        if (currentTrackIndex === 0) { return; }
-        const prevTrackIndex = (currentTrackIndex - 1 + queue.length) % queue.length; // Обчислюємо попередній трек
-        setCurrentTrack(queue[prevTrackIndex]);
-        setCurrentTrackIndex(prevTrackIndex); // Оновлюємо індекс поточного треку
     };
 
     const getHighResThumbnail = (track) => {
@@ -124,7 +107,6 @@ export default function Dashboard() {
     };
 
     const handleArtistClick = (artistName) => {
-        // За допомогою useNavigate можна відправити на сторінку артиста
         navigate(`/artist/${artistName}`);
     };
 
@@ -209,7 +191,14 @@ export default function Dashboard() {
                                         </div>
                                     </div>
                                     <h3 className="font-semibold text-base mb-1 text-left truncate">{track.title}</h3>
-                                    <p className="text-sm text-white/70 text-left truncate">{track.artists?.map(a => a.name).join(", ")}</p>
+                                    <p className="text-sm text-white/70 text-left truncate">
+                                        <button
+                                            onClick={() => handleArtistClick(track.artists?.[0].name)}
+                                            className="text-white hover:underline"
+                                        >
+                                            {track.artists?.map(a => a.name).join(", ")}
+                                        </button>
+                                    </p>
                                 </div>
                             ))}
                         </div>
