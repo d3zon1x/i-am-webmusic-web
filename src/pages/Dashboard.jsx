@@ -159,7 +159,7 @@ export default function Dashboard() {
                     >
                         Queue is null
 
-                        <Recommendations/>
+                        {/*<Recommendations/>*/}
                     </div>
 
                 )}

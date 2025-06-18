@@ -17,24 +17,63 @@ export default function CustomAudioPlayer() {
     const audioRef = useRef(null);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const {currentTrack, playNext, playPrev, currentTrackIndex } = useMusic();
+    const {currentTrack, playNext, playPrev, currentTrackIndex, isManualPlay, setIsManualPlay } = useMusic();
+
+    
+
+
+    // useEffect(() => {
+    //     const audio = audioRef.current;
+    //     if (!audio) return;
+    //     if (audio && currentTrack?.url) {
+    //         audio.play().catch(error => {
+    //             console.error("Error trying to play the audio:", error);
+    //         });
+    //         setIsPlaying(true);
+    //     }
+    //
+    //     // localStorage.removeItem("playerTime");
+    //     const savedTime = parseFloat(localStorage.getItem("playerTime"));
+    //     if (!isNaN(savedTime)) {
+    //         audio.currentTime = savedTime;
+    //     }
+    //     const updateProgress = () => setProgress(audio.currentTime);
+    //     const setAudioDuration = () => setDuration(audio.duration);
+    //
+    //     if (isManualPlay) {
+    //         audio.play().catch(err => console.error("play error", err));
+    //         setIsPlaying(true);
+    //         setIsManualPlay(false); 
+    //     }
+    //
+    //     audio.addEventListener("timeupdate", updateProgress);
+    //     audio.addEventListener("loadedmetadata", setAudioDuration);
+    //
+    //     return () => {
+    //         audio.removeEventListener("timeupdate", updateProgress);
+    //         audio.removeEventListener("loadedmetadata", setAudioDuration);
+    //     };
+    // }, [currentTrack]);
 
     useEffect(() => {
         const audio = audioRef.current;
-        if (!audio) return;
-        if (audio && currentTrack?.url) {
-            audio.play().catch(error => {
-                console.error("Error trying to play the audio:", error);
-            });
-            setIsPlaying(true);
+        if (!audio || !currentTrack?.url) return;
+
+        // localStorage.removeItem("playerTime");
+
+        const savedTime = parseFloat(localStorage.getItem("playerTime"));
+        if (!isNaN(savedTime)) {
+            audio.currentTime = savedTime;
         }
-        console.log("Current playing currentTrack: ", currentTrack)
+
         const updateProgress = () => setProgress(audio.currentTime);
         const setAudioDuration = () => setDuration(audio.duration);
 
-        // Почати відтворення, коли компонент монтується
-        audio.play();
-        setIsPlaying(true); // Змінюємо статус на "playing" після того, як трек почав грати
+        if (isManualPlay) {
+            audio.play().catch(err => console.error("play error", err));
+            setIsPlaying(true);
+            setIsManualPlay(false); 
+        }
 
         audio.addEventListener("timeupdate", updateProgress);
         audio.addEventListener("loadedmetadata", setAudioDuration);
@@ -43,6 +82,20 @@ export default function CustomAudioPlayer() {
             audio.removeEventListener("timeupdate", updateProgress);
             audio.removeEventListener("loadedmetadata", setAudioDuration);
         };
+    }, [currentTrack]);
+
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        const saveTime = () => {
+            if (currentTrack?.url) {
+                localStorage.setItem("playerTime", audio.currentTime.toString());
+            }
+        };
+
+        audio.addEventListener("timeupdate", saveTime);
+        return () => audio.removeEventListener("timeupdate", saveTime);
     }, [currentTrack]);
 
     const togglePlayback = () => {

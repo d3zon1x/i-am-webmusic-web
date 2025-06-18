@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useCallback } from 'react';
+import React, {createContext, useState, useContext, useCallback, useEffect} from 'react';
 
 const MusicContext = createContext();
 
@@ -6,11 +6,38 @@ export function MusicProvider({ children }) {
     const [queue, setQueue] = useState([]);
     const [currentTrackIndex, setCurrentTrackIndex] = useState(null);
     const [currentTrack, setCurrentTrack] = useState(null);
+    const [isManualPlay, setIsManualPlay] = useState(false);
+
+
+    useEffect(() => {
+        const saved = localStorage.getItem("playerState");
+        if (saved) {
+            const data = JSON.parse(saved);
+            if (data.queue && data.currentTrackIndex != null && data.currentTrack) {
+                setQueue(data.queue);
+                setCurrentTrackIndex(data.currentTrackIndex);
+                setCurrentTrack(data.currentTrack);
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        const data = {
+            queue,
+            currentTrackIndex,
+            currentTrack
+        };
+        localStorage.setItem("playerState", JSON.stringify(data));
+    }, [queue, currentTrackIndex, currentTrack]);
+
+  
+
 
     const playTrack = useCallback((trackDetails, index) => {
         setCurrentTrack(trackDetails);
         setCurrentTrackIndex(index);
-        // також можна тут запускати audio.play()
+        localStorage.removeItem("playerTime");
+        setIsManualPlay(true);
     }, []);
 
     const playNext = useCallback(() => {
@@ -45,7 +72,7 @@ export function MusicProvider({ children }) {
             queue, setQueue,
             currentTrack, currentTrackIndex,
             playTrack, playNext, playPrev,
-            removeFromQueue
+            removeFromQueue, isManualPlay, setIsManualPlay
         }}>
             {children}
         </MusicContext.Provider>
