@@ -6,6 +6,7 @@ export default function LogoutButton() {
         try {
             await api.post("/logout")
             window.location.href = "/"
+            localStorage.removeItem("playerState");
         } catch (err) {
             console.error("Logout error:", err)
         }
