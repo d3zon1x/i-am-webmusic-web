@@ -8,10 +8,12 @@ import {FaPlay} from "react-icons/fa";
 import {Clock} from "lucide-react";
 import CustomAudioPlayer from "@/components/player/CustomAudioPlayer.jsx";
 import {useMusic} from "@/contexts/MusicContext.jsx";
+import {useNavigate} from "react-router-dom";
 
 export default function MainPageWrapper({ children }) {
     const [user, setUser] = useState(null)
     const { currentTrack } = useMusic();
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -19,6 +21,8 @@ export default function MainPageWrapper({ children }) {
             .then(res => setUser(res.data))
             .catch(() => setUser(null))
     }, [])
+    
+    
 
     return (
         <div
@@ -36,7 +40,9 @@ export default function MainPageWrapper({ children }) {
                     className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-6 text-sm font-semibold">
                     <button className="hover:text-red-500 transition">Home</button>
                     <button className="hover:text-red-500 transition">For you</button>
-                    <img src={logo} alt="Logo" className="h-8 object-contain mx-2"/>
+                    <button onClick={() => navigate(`/dashboard`)}>
+                        <img src={logo} alt="Logo" className="h-8 object-contain mx-2"/>
+                    </button>
                     <button className="hover:text-red-500 transition">Ranking</button>
                     <button className="hover:text-red-500 transition">Profile</button>
                 </div>
@@ -50,7 +56,8 @@ export default function MainPageWrapper({ children }) {
             </header>
 
             {/* MAIN CONTENT */}
-            <main className="p-8 h-[calc(100vh-72px)] overflow-y-auto pb-40 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+            <main className="h-[calc(100vh-72px)] overflow-y-auto  scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+            {/*<main className="h-[calc(100vh-72px)] overflow-y-auto pb-40 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">*/}
                 <div >
 
                     {children}

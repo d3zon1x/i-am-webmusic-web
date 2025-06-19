@@ -117,7 +117,7 @@ export default function Dashboard() {
 
     return (
         <MainPageWrapper>
-            <div className="p-6 mt-6 text-center max-w-4xl mx-auto">
+            <div className="p-6 mt-6 text-center max-w-4xl mx-auto pb-40">
                 <h1 className="text-3xl font-bold mb-6">I AM WEB MUSIC</h1>
 
                 <div className="flex justify-center mb-10">

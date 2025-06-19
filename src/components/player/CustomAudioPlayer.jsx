@@ -17,43 +17,8 @@ export default function CustomAudioPlayer() {
     const audioRef = useRef(null);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const {currentTrack, playNext, playPrev, currentTrackIndex, isManualPlay, setIsManualPlay } = useMusic();
-
+    const {currentTrack, playNext, playPrev, currentTrackIndex, isManualPlay, setIsManualPlay, queue } = useMusic();
     
-
-
-    // useEffect(() => {
-    //     const audio = audioRef.current;
-    //     if (!audio) return;
-    //     if (audio && currentTrack?.url) {
-    //         audio.play().catch(error => {
-    //             console.error("Error trying to play the audio:", error);
-    //         });
-    //         setIsPlaying(true);
-    //     }
-    //
-    //     // localStorage.removeItem("playerTime");
-    //     const savedTime = parseFloat(localStorage.getItem("playerTime"));
-    //     if (!isNaN(savedTime)) {
-    //         audio.currentTime = savedTime;
-    //     }
-    //     const updateProgress = () => setProgress(audio.currentTime);
-    //     const setAudioDuration = () => setDuration(audio.duration);
-    //
-    //     if (isManualPlay) {
-    //         audio.play().catch(err => console.error("play error", err));
-    //         setIsPlaying(true);
-    //         setIsManualPlay(false); 
-    //     }
-    //
-    //     audio.addEventListener("timeupdate", updateProgress);
-    //     audio.addEventListener("loadedmetadata", setAudioDuration);
-    //
-    //     return () => {
-    //         audio.removeEventListener("timeupdate", updateProgress);
-    //         audio.removeEventListener("loadedmetadata", setAudioDuration);
-    //     };
-    // }, [currentTrack]);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -97,6 +62,9 @@ export default function CustomAudioPlayer() {
         audio.addEventListener("timeupdate", saveTime);
         return () => audio.removeEventListener("timeupdate", saveTime);
     }, [currentTrack]);
+
+  
+
 
     const togglePlayback = () => {
         if (audioRef.current) {
@@ -215,21 +183,32 @@ export default function CustomAudioPlayer() {
                         {/*</button>*/}
                     </div>
                     <div className="volume-control">
-                    <FaVolumeUp className="text-white"/>
+                        <FaVolumeUp className="text-white"/>
                         <VolumeSlider volume={volume} onChange={handleVolumeChange}/>
                     </div>
                 </div>
 
-               
 
                 {/* Audio */}
-                <audio ref={audioRef} src={currentTrack?.url} onEnded={() => setIsPlaying(false)}/>
+                <audio
+                    ref={audioRef}
+                    src={currentTrack?.url}
+                    onEnded={() => {
+                        if (queue && currentTrackIndex + 1 < queue.length) {
+                            const nextIndex = currentTrackIndex + 1;
+                            const nextTrack = queue[nextIndex];
+                            playNext(); // <-- запускає наступний із контексту
+                        } else {
+                            setIsPlaying(false); // кінець черги — стоп
+                        }
+                    }}
+                />
             </div>
-            <QueueModal 
-                isOpen={isModalOpen} 
+            <QueueModal
+                isOpen={isModalOpen}
                 closeModal={toggleModal}
                 className={isModalOpen ? 'open' : ''}
-            /> 
+            />
 
         </div>
     );
